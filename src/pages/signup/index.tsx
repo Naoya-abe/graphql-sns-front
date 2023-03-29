@@ -16,8 +16,13 @@ import { BsCheckLg } from 'react-icons/bs';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SignupFormData, signupFormValidateSchema } from '@/types/signup';
+import { useQuery } from 'urql';
+import { GetUsersDocument } from '@/graphql/generated/graphql';
 
 const SignUp: NextPage = () => {
+  const [result] = useQuery({ query: GetUsersDocument });
+  console.log(result);
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -129,7 +134,7 @@ const SignUp: NextPage = () => {
             bgColor="blue.400"
             color="white"
             type="submit"
-            isLoading={false}
+            isLoading={isSubmitting}
             w="400px"
           >
             <Text>Submit</Text>
