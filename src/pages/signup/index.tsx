@@ -13,14 +13,23 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { BsCheckLg } from 'react-icons/bs';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SignupFormData, signupFormValidateSchema } from '@/types/signup';
 
 const SignUp: NextPage = () => {
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm();
+  } = useForm<SignupFormData>({
+    resolver: yupResolver(signupFormValidateSchema),
+  });
+
+  const onSubmit: SubmitHandler<SignupFormData> = (data) => {
+    console.log(data);
+  };
+
   return (
     <Flex>
       <Center w="50vw" h="100vh" bgColor="blue.400" flexDirection="column">
@@ -81,43 +90,39 @@ const SignUp: NextPage = () => {
         <Text fontSize="6xl" as="b" color="blackAlpha.800" mb={10}>
           Sign Up
         </Text>
-        <form>
-          <FormControl isInvalid={true} mb={5}>
-            <FormLabel
-              htmlFor="email"
-              fontSize="2xl"
-              color="blackAlpha.800"
-              fontWeight="bold"
-            >
-              Email
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={!!errors.email} mb={5}>
+            <FormLabel htmlFor="email">
+              <Text fontSize="2xl" color="blackAlpha.800" as="b">
+                Email
+              </Text>
             </FormLabel>
             <Input
               id="email"
               placeholder="please enter your email"
               type="email"
               w="400px"
+              {...register('email')}
             />
             <FormErrorMessage fontWeight="bold">
-              サンプルエラーメッセージ
+              {errors.email && errors.email.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={true} mb={8}>
-            <FormLabel
-              htmlFor="password"
-              fontSize="2xl"
-              color="blackAlpha.800"
-              fontWeight="bold"
-            >
-              password
+          <FormControl isInvalid={!!errors.password} mb={8}>
+            <FormLabel htmlFor="password">
+              <Text fontSize="2xl" color="blackAlpha.800" as="b">
+                password
+              </Text>
             </FormLabel>
             <Input
               id="password"
               placeholder="please enter your password"
               type="password"
               w="400px"
+              {...register('password')}
             />
             <FormErrorMessage fontWeight="bold">
-              サンプルエラーメッセージ
+              {errors.password && errors.password.message}
             </FormErrorMessage>
           </FormControl>
           <Button
