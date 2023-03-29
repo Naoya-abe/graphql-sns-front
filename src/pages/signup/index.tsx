@@ -1,5 +1,7 @@
 import { NextPage } from 'next';
+import NextLink from 'next/link';
 import {
+  Box,
   Button,
   Center,
   Flex,
@@ -7,32 +9,66 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Link,
   List,
   ListIcon,
   ListItem,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { BsCheckLg } from 'react-icons/bs';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from 'urql';
 import { SignupFormData, signupFormValidateSchema } from '@/types/signup';
-import { useQuery } from 'urql';
-import { GetUsersDocument } from '@/graphql/generated/graphql';
+import { CreateUserDocument } from '@/graphql/generated/graphql';
 
 const SignUp: NextPage = () => {
-  const [result] = useQuery({ query: GetUsersDocument });
-  console.log(result);
+  const toast = useToast();
+  const [createUserResult, createUser] = useMutation(CreateUserDocument);
+  console.log(createUserResult);
 
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
+    reset,
   } = useForm<SignupFormData>({
     resolver: yupResolver(signupFormValidateSchema),
   });
 
-  const onSubmit: SubmitHandler<SignupFormData> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    const variables = { email: data.email, password: data.password };
+    const result = await createUser(variables);
+    console.log(result);
+    if (result.error) {
+      toast({
+        title: 'Error',
+        description: 'ユーザーの新規登録に失敗しました。',
+        status: 'error',
+        duration: 10000,
+        isClosable: true,
+        position: 'top',
+      });
+      return;
+    }
+    toast({
+      title: 'Success',
+      description: (
+        <Box>
+          <Text>ユーザーの新規作成が完了しました。</Text>
+          <Link as={NextLink} href="/signin" textDecoration="underline">
+            ログイン画面
+          </Link>
+          にお進みください。
+        </Box>
+      ),
+      status: 'success',
+      duration: 10000,
+      isClosable: true,
+      position: 'top',
+    });
+    reset();
   };
 
   return (
@@ -116,7 +152,7 @@ const SignUp: NextPage = () => {
           <FormControl isInvalid={!!errors.password} mb={8}>
             <FormLabel htmlFor="password">
               <Text fontSize="2xl" color="blackAlpha.800" as="b">
-                password
+                Password
               </Text>
             </FormLabel>
             <Input
@@ -140,6 +176,11 @@ const SignUp: NextPage = () => {
             <Text>Submit</Text>
           </Button>
         </form>
+        <Link as={NextLink} href="/signin" mt={10}>
+          <Text color="blue.600" fontSize="xl" as="b">
+            Go to Sign In
+          </Text>
+        </Link>
       </Center>
     </Flex>
   );
