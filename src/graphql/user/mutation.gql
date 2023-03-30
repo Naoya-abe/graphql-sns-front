@@ -1,0 +1,10 @@
+mutation CreateUser($email: String!, $password: String!) {
+  createUser(createUserDto: { email: $email, password: $password }) {
+    id
+    email
+    nickname
+    selfIntroduction
+    createdAt
+    updatedAt
+  }
+}
