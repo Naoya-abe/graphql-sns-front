@@ -22,12 +22,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'urql';
 import { SignupFormData, signupFormValidateSchema } from '@/types/signup';
 import { CreateUserDocument } from '@/graphql/generated/graphql';
+import useAuth from '@/hooks/useAuth';
 
 const SignUp: NextPage = () => {
+  useAuth({ requireAuth: false });
   const toast = useToast();
   const [createUserResult, createUser] = useMutation(CreateUserDocument);
-  console.log(createUserResult);
-
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -40,7 +40,6 @@ const SignUp: NextPage = () => {
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
     const variables = { email: data.email, password: data.password };
     const result = await createUser(variables);
-    console.log(result);
     if (result.error) {
       toast({
         title: 'Error',

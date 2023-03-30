@@ -22,8 +22,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'urql';
 import { SigninFormData, signinFormValidateSchema } from '@/types/signin';
 import { LoginDocument } from '@/graphql/generated/graphql';
+import useAuth from '@/hooks/useAuth';
 
 const SignIn: NextPage = () => {
+  useAuth({ requireAuth: false });
   const toast = useToast();
   const router = useRouter();
   const [loginResult, login] = useMutation(LoginDocument);
