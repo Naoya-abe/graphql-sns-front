@@ -5,9 +5,9 @@
 ブランチの役割は以下の通り。
 
 - 本番：main
-- 開発：feature/IssueId_フロントエンド_Issueのタイトル
+- 開発：feature/IssueId_Issueのタイトル
 ```
-例：feature/#1_フロントエンド_基本機能実装
+例：feature/#1_基本機能実装
 ```
 
 ## 参考
