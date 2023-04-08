@@ -1,27 +1,21 @@
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { Button, Center, Text } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import useAuth from '@/hooks/useAuth';
+import Header from '@/components/header';
+import Navigation from '@/components/navigation';
+import Timeline from '@/components/timeline';
 
 const Home: NextPage = () => {
-  useAuth({ requireAuth: true });
-  const router = useRouter();
-  const onSignOut = () => {
-    localStorage.removeItem('authToken');
-    router.push('/signin');
-  };
+  // useAuth({ requireAuth: true });
+
   return (
-    <Center w="100vw" h="100vh">
-      <Button
-        onClick={onSignOut}
-        bgColor="red.400"
-        color="white"
-        type="button"
-        w="200px"
-      >
-        <Text>Sign Out</Text>
-      </Button>
-    </Center>
+    <Box w="100vw" h="100vh">
+      <Header />
+      <Flex>
+        <Navigation />
+        <Timeline />
+      </Flex>
+    </Box>
   );
 };
 
