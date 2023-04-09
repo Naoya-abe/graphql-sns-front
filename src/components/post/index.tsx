@@ -2,8 +2,11 @@ import { FC } from 'react';
 import { Avatar, Box, Flex, Icon, Text } from '@chakra-ui/react';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { GoCommentDiscussion } from 'react-icons/go';
+import { Props } from './types';
+import formatDate from '@/utils/formatDate';
 
-const Post: FC = () => {
+const Post: FC<Props> = ({ post }) => {
+  const { id, content, userId, user, createdAt, updatedAt } = post;
   return (
     <Flex borderBottom="1px solid" borderColor="blue.400" p={10}>
       <Box mr={3}>
@@ -12,16 +15,14 @@ const Post: FC = () => {
       <Box>
         <Flex alignItems="center" mb={1}>
           <Text fontSize="lg" as="b" mr={4}>
-            NickName
+            {user.nickname}
           </Text>
           <Text fontSize="md" color="blackAlpha.500">
-            YYYY/MM/DD
+            {formatDate(createdAt)}
           </Text>
         </Flex>
         <Text fontSize="lg" color="blackAlpha.800" textAlign="justify" mb={3}>
-          {
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and"
-          }
+          {content}
         </Text>
         <Flex alignItems="center" justify="space-between">
           <Flex alignItems="center">

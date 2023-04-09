@@ -1,8 +1,14 @@
-import { Box } from '@chakra-ui/react';
 import { FC } from 'react';
-import Post from '../post';
+import { Box } from '@chakra-ui/react';
+import { useQuery } from 'urql';
+import Post from '@/components/post';
+import { GetPostsDocument } from '@/graphql/generated/graphql';
+import { sortByCreatedAtDescending } from '@/utils/sortPosts';
 
 const Timeline: FC = () => {
+  const [result] = useQuery({ query: GetPostsDocument });
+  const sortedResult = sortByCreatedAtDescending(result.data?.posts);
+
   return (
     <Box
       w="720px"
@@ -11,11 +17,9 @@ const Timeline: FC = () => {
       borderColor="blue.400"
       overflowY="scroll"
     >
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
+      {sortedResult?.map((post) => {
+        return <Post key={post.id} post={post} />;
+      })}
     </Box>
   );
 };

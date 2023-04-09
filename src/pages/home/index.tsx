@@ -6,7 +6,7 @@ import Navigation from '@/components/navigation';
 import Timeline from '@/components/timeline';
 
 const Home: NextPage = () => {
-  // useAuth({ requireAuth: true });
+  useAuth({ requireAuth: true });
 
   return (
     <Box w="100vw" h="100vh">
