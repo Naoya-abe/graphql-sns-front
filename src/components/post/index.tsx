@@ -12,7 +12,7 @@ const Post: FC<Props> = ({ post }) => {
       <Box mr={3}>
         <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
       </Box>
-      <Box>
+      <Box w="100%">
         <Flex alignItems="center" mb={1}>
           <Text fontSize="lg" as="b" mr={4}>
             {user.nickname}
