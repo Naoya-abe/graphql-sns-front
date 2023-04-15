@@ -3,8 +3,16 @@ import { FC } from 'react';
 import { Box, Button, Flex, Link, Icon, Text } from '@chakra-ui/react';
 import { FaHome } from 'react-icons/fa';
 import { BsPersonCircle } from 'react-icons/bs';
+import { useSetRecoilState } from 'recoil';
+import { isCreatePostModalOpenState } from '@/recoil/createPostModal/atom';
 
 const Navigation: FC = () => {
+  const setIsCreatePostModalOpen = useSetRecoilState(
+    isCreatePostModalOpenState
+  );
+  const onCreatePostModalOpen = () => {
+    setIsCreatePostModalOpen(true);
+  };
   return (
     <Box p="72px">
       <Flex alignItems="center" mb={8}>
@@ -20,7 +28,7 @@ const Navigation: FC = () => {
         </Link>
       </Flex>
       <Button
-        onClick={() => console.log('Post用のModalが開く')}
+        onClick={() => onCreatePostModalOpen()}
         bgColor="blue.400"
         w="230px"
         h="48px"

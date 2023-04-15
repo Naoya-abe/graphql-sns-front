@@ -8,7 +8,7 @@ export const signinFormValidateSchema = yup.object({
   password: yup
     .string()
     .required('入力必須項目です。')
-    .min(8, '8文字以内で入力してください。'),
+    .min(8, '8文字以上で入力してください。'),
 });
 
 export type SigninFormData = yup.InferType<typeof signinFormValidateSchema>;
