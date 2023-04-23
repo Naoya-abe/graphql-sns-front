@@ -29,7 +29,7 @@ const SignIn: NextPage = () => {
   const toast = useToast();
   const router = useRouter();
   const [loginResult, login] = useMutation(LoginDocument);
-  console.log(loginResult);
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -41,7 +41,6 @@ const SignIn: NextPage = () => {
   const onSubmit: SubmitHandler<SigninFormData> = async (data) => {
     const variables = { email: data.email, password: data.password };
     const result = await login(variables);
-    console.log(result);
     if (result.error) {
       toast({
         title: 'Error',

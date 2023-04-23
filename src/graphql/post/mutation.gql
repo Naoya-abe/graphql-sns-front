@@ -1,0 +1,17 @@
+mutation CreatePost($content: String!) {
+  createPost(createPostDto: { content: $content }) {
+    id
+    content
+    userId
+    user {
+      id
+      email
+      nickname
+      selfIntroduction
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
