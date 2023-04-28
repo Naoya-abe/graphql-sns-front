@@ -15,3 +15,21 @@ query GetPosts {
     updatedAt
   }
 }
+
+query GetPost($postId: String!) {
+  post(getPostByIdDto: { postId: $postId }) {
+    id
+    content
+    userId
+    user {
+      id
+      email
+      nickname
+      selfIntroduction
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}

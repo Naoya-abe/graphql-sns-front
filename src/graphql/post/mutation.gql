@@ -15,3 +15,21 @@ mutation CreatePost($content: String!) {
     updatedAt
   }
 }
+
+mutation EditPost($postId: String!, $content: String!) {
+  editPost(editPostDto: { postId: $postId, content: $content }) {
+    id
+    content
+    userId
+    user {
+      id
+      email
+      nickname
+      selfIntroduction
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}

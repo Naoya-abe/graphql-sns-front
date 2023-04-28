@@ -4,9 +4,20 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { GoCommentDiscussion } from 'react-icons/go';
 import { Props } from './types';
 import formatDate from '@/utils/formatDate';
+import { useSetRecoilState } from 'recoil';
+import {
+  editingPostIdState,
+  isEditPostModalOpenState,
+} from '@/recoil/editPostModal/atoms';
 
 const Post: FC<Props> = ({ post }) => {
   const { id, content, userId, user, createdAt, updatedAt } = post;
+  const setIsEditPostModalOpen = useSetRecoilState(isEditPostModalOpenState);
+  const setEditingPostId = useSetRecoilState(editingPostIdState);
+  const onEditClick = () => {
+    setEditingPostId(id);
+    setIsEditPostModalOpen(true);
+  };
   return (
     <Flex borderBottom="1px solid" borderColor="blue.400" p={10}>
       <Box mr={3}>
@@ -64,9 +75,7 @@ const Post: FC<Props> = ({ post }) => {
               color="green.500"
               as="b"
               mr={5}
-              onClick={() => {
-                console.log('Edit Modalが表示される');
-              }}
+              onClick={onEditClick}
               _hover={{ cursor: 'pointer' }}
             >
               Edit

@@ -14,44 +14,55 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { isCreatePostModalOpenState } from '@/recoil/createPostModal/atom';
+import { useRecoilState } from 'recoil';
+import {
+  editingPostIdState,
+  isEditPostModalOpenState,
+} from '@/recoil/editPostModal/atoms';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { CreatePostFormData, createPostFormValidateSchema } from './types';
+import { EditPostFormData, editPostFormValidateSchema } from './types';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from 'urql';
-import { CreatePostDocument } from '@/graphql/generated/graphql';
+import { useMutation, useQuery } from 'urql';
+import { EditPostDocument, GetPostDocument } from '@/graphql/generated/graphql';
 
 const EditPostModal: FC = () => {
-  const isCreatePostModalOpen = useRecoilValue(isCreatePostModalOpenState);
-  const setIsCreatePostModalOpen = useSetRecoilState(
-    isCreatePostModalOpenState
+  const [isEditPostModalOpen, setIsEditPostModalOpen] = useRecoilState(
+    isEditPostModalOpenState
   );
+  const [editingPostId, setIsEditingPostId] =
+    useRecoilState(editingPostIdState);
+  const [result] = useQuery({
+    query: GetPostDocument,
+    variables: { postId: editingPostId },
+  });
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
     reset,
     watch,
-  } = useForm<CreatePostFormData>({
-    resolver: yupResolver(createPostFormValidateSchema),
+  } = useForm<EditPostFormData>({
+    resolver: yupResolver(editPostFormValidateSchema),
   });
   const contentCount = watch().content?.length | 0;
-  const [createPostResult, createPost] = useMutation(CreatePostDocument);
+  const [editPostResult, editPost] = useMutation(EditPostDocument);
+  console.log(editPostResult);
   const toast = useToast();
 
-  const onCreatePostModalClose = () => {
-    setIsCreatePostModalOpen(false);
+  const onEditPostModalClose = () => {
+    setIsEditPostModalOpen(false);
+    setIsEditingPostId('');
     reset();
   };
 
-  const onSubmit: SubmitHandler<CreatePostFormData> = async (data) => {
-    const variables = { content: data.content };
-    const result = await createPost(variables);
+  const onSubmit: SubmitHandler<EditPostFormData> = async (data) => {
+    const variables = { postId: editingPostId, content: data.content };
+    const result = await editPost(variables);
     if (result.error) {
       toast({
         title: 'Error',
-        description: '投稿の作成に失敗しました。',
+        description: '投稿の編集に失敗しました。',
         status: 'error',
         duration: 10000,
         isClosable: true,
@@ -60,24 +71,38 @@ const EditPostModal: FC = () => {
       console.error(result.error.message);
       return;
     }
-    setIsCreatePostModalOpen(false);
+    setIsEditPostModalOpen(false);
+    setIsEditingPostId('');
     reset();
+    toast({
+      title: 'Success',
+      description: '投稿の編集に成功しました。',
+      status: 'success',
+      duration: 10000,
+      isClosable: true,
+      position: 'top',
+    });
   };
 
   return (
     <Modal
-      isOpen={isCreatePostModalOpen}
-      onClose={onCreatePostModalClose}
+      isOpen={isEditPostModalOpen}
+      onClose={onEditPostModalClose}
       size="lg"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{"Let's post"}</ModalHeader>
+        <ModalHeader>Edit</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.content} mb={5}>
-              <Textarea {...register('content')} resize="none" h="200px" />
+              <Textarea
+                {...register('content')}
+                resize="none"
+                h="200px"
+                defaultValue={result.data?.post.content}
+              />
               <Flex justify="space-between" mt={1}>
                 <Text
                   fontSize="sm"
