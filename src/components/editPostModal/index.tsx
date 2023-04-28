@@ -14,7 +14,7 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { isCreatePostModalOpenState } from '@/recoil/createPostModal/atom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { CreatePostFormData, createPostFormValidateSchema } from './types';
@@ -22,8 +22,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'urql';
 import { CreatePostDocument } from '@/graphql/generated/graphql';
 
-const CreatePostModal: FC = () => {
-  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useRecoilState(
+const EditPostModal: FC = () => {
+  const isCreatePostModalOpen = useRecoilValue(isCreatePostModalOpenState);
+  const setIsCreatePostModalOpen = useSetRecoilState(
     isCreatePostModalOpenState
   );
   const {
@@ -110,4 +111,4 @@ const CreatePostModal: FC = () => {
   );
 };
 
-export default CreatePostModal;
+export default EditPostModal;
