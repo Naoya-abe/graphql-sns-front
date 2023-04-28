@@ -61,6 +61,14 @@ const CreatePostModal: FC = () => {
     }
     setIsCreatePostModalOpen(false);
     reset();
+    toast({
+      title: 'Success',
+      description: '投稿の作成に成功しました。',
+      status: 'success',
+      duration: 10000,
+      isClosable: true,
+      position: 'top',
+    });
   };
 
   return (
