@@ -12,7 +12,6 @@ import {
   ModalOverlay,
   Text,
   Textarea,
-  useToast,
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import {
@@ -24,6 +23,8 @@ import { EditPostFormData, editPostFormValidateSchema } from './types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQuery } from 'urql';
 import { EditPostDocument, GetPostDocument } from '@/graphql/generated/graphql';
+import useSuccessToast from '@/hooks/useSuccessToast';
+import useErrorToast from '@/hooks/useErrorToast';
 
 const EditPostModal: FC = () => {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useRecoilState(
@@ -48,7 +49,9 @@ const EditPostModal: FC = () => {
   const contentCount = watch().content?.length | 0;
   const [editPostResult, editPost] = useMutation(EditPostDocument);
   console.log(editPostResult);
-  const toast = useToast();
+
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
 
   const onEditPostModalClose = () => {
     setIsEditPostModalOpen(false);
@@ -60,28 +63,14 @@ const EditPostModal: FC = () => {
     const variables = { postId: editingPostId, content: data.content };
     const result = await editPost(variables);
     if (result.error) {
-      toast({
-        title: 'Error',
-        description: '投稿の編集に失敗しました。',
-        status: 'error',
-        duration: 10000,
-        isClosable: true,
-        position: 'top',
-      });
+      errorToast('投稿の編集に失敗しました。');
       console.error(result.error.message);
       return;
     }
     setIsEditPostModalOpen(false);
     setIsEditingPostId('');
     reset();
-    toast({
-      title: 'Success',
-      description: '投稿の編集に成功しました。',
-      status: 'success',
-      duration: 10000,
-      isClosable: true,
-      position: 'top',
-    });
+    successToast('投稿の編集に成功しました。');
   };
 
   return (

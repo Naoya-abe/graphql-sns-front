@@ -6,6 +6,7 @@ import Navigation from '@/components/navigation';
 import Timeline from '@/components/timeline';
 import CreatePostModal from '@/components/createPostModal';
 import EditPostModal from '@/components/editPostModal';
+import DeletePostModal from '@/components/deletePostModal';
 
 const Home: NextPage = () => {
   useAuth({ requireAuth: true });
@@ -19,6 +20,7 @@ const Home: NextPage = () => {
       </Flex>
       <CreatePostModal />
       <EditPostModal />
+      <DeletePostModal />
     </Box>
   );
 };

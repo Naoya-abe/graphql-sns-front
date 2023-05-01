@@ -14,7 +14,6 @@ import {
   ListIcon,
   ListItem,
   Text,
-  useToast,
 } from '@chakra-ui/react';
 import { BsCheckLg } from 'react-icons/bs';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -23,12 +22,15 @@ import { useMutation } from 'urql';
 import { SigninFormData, signinFormValidateSchema } from '@/types/signin';
 import { LoginDocument } from '@/graphql/generated/graphql';
 import useAuth from '@/hooks/useAuth';
+import useErrorToast from '@/hooks/useErrorToast';
 
 const SignIn: NextPage = () => {
   useAuth({ requireAuth: false });
-  const toast = useToast();
+
   const router = useRouter();
   const [loginResult, login] = useMutation(LoginDocument);
+
+  const errorToast = useErrorToast();
 
   const {
     formState: { errors, isSubmitting },
@@ -42,14 +44,7 @@ const SignIn: NextPage = () => {
     const variables = { email: data.email, password: data.password };
     const result = await login(variables);
     if (result.error) {
-      toast({
-        title: 'Error',
-        description: 'ログインに失敗しました。',
-        status: 'error',
-        duration: 10000,
-        isClosable: true,
-        position: 'top',
-      });
+      errorToast('ログインに失敗しました。');
       return;
     }
     const jwt = result.data?.login.jwt;

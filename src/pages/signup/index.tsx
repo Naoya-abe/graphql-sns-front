@@ -14,7 +14,6 @@ import {
   ListIcon,
   ListItem,
   Text,
-  useToast,
 } from '@chakra-ui/react';
 import { BsCheckLg } from 'react-icons/bs';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -23,11 +22,17 @@ import { useMutation } from 'urql';
 import { SignupFormData, signupFormValidateSchema } from '@/types/signup';
 import { CreateUserDocument } from '@/graphql/generated/graphql';
 import useAuth from '@/hooks/useAuth';
+import useSuccessToast from '@/hooks/useSuccessToast';
+import useErrorToast from '@/hooks/useErrorToast';
 
 const SignUp: NextPage = () => {
   useAuth({ requireAuth: false });
-  const toast = useToast();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
+
   const [createUserResult, createUser] = useMutation(CreateUserDocument);
+  console.log(createUserResult);
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -41,32 +46,18 @@ const SignUp: NextPage = () => {
     const variables = { email: data.email, password: data.password };
     const result = await createUser(variables);
     if (result.error) {
-      toast({
-        title: 'Error',
-        description: 'ユーザーの新規登録に失敗しました。',
-        status: 'error',
-        duration: 10000,
-        isClosable: true,
-        position: 'top',
-      });
+      errorToast('ユーザーの新規登録に失敗しました。');
       return;
     }
-    toast({
-      title: 'Success',
-      description: (
-        <Box>
-          <Text>ユーザーの新規作成が完了しました。</Text>
-          <Link as={NextLink} href="/signin" textDecoration="underline">
-            ログイン画面
-          </Link>
-          にお進みください。
-        </Box>
-      ),
-      status: 'success',
-      duration: 10000,
-      isClosable: true,
-      position: 'top',
-    });
+    successToast(
+      <Box>
+        <Text>ユーザーの新規作成が完了しました。</Text>
+        <Link as={NextLink} href="/signin" textDecoration="underline">
+          ログイン画面
+        </Link>
+        にお進みください。
+      </Box>
+    );
     reset();
   };
 

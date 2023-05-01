@@ -9,15 +9,30 @@ import {
   editingPostIdState,
   isEditPostModalOpenState,
 } from '@/recoil/editPostModal/atoms';
+import {
+  deletingPostIdState,
+  isDeletePostModalOpenState,
+} from '@/recoil/deletePostModal/atoms';
 
 const Post: FC<Props> = ({ post }) => {
   const { id, content, userId, user, createdAt, updatedAt } = post;
+
   const setIsEditPostModalOpen = useSetRecoilState(isEditPostModalOpenState);
   const setEditingPostId = useSetRecoilState(editingPostIdState);
   const onEditClick = () => {
     setEditingPostId(id);
     setIsEditPostModalOpen(true);
   };
+
+  const setIsDeletePostModalOpen = useSetRecoilState(
+    isDeletePostModalOpenState
+  );
+  const setDeletingPostId = useSetRecoilState(deletingPostIdState);
+  const onDeleteClick = () => {
+    setDeletingPostId(id);
+    setIsDeletePostModalOpen(true);
+  };
+
   return (
     <Flex borderBottom="1px solid" borderColor="blue.400" p={10}>
       <Box mr={3}>
@@ -84,9 +99,7 @@ const Post: FC<Props> = ({ post }) => {
               fontSize="md"
               color="red.500"
               as="b"
-              onClick={() => {
-                console.log('Delete Modalが表示される');
-              }}
+              onClick={onDeleteClick}
               _hover={{ cursor: 'pointer' }}
             >
               Delete

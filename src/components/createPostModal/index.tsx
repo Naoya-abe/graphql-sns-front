@@ -12,7 +12,6 @@ import {
   ModalOverlay,
   Text,
   Textarea,
-  useToast,
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { isCreatePostModalOpenState } from '@/recoil/createPostModal/atom';
@@ -21,6 +20,8 @@ import { CreatePostFormData, createPostFormValidateSchema } from './types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'urql';
 import { CreatePostDocument } from '@/graphql/generated/graphql';
+import useErrorToast from '@/hooks/useErrorToast';
+import useSuccessToast from '@/hooks/useSuccessToast';
 
 const CreatePostModal: FC = () => {
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useRecoilState(
@@ -37,7 +38,10 @@ const CreatePostModal: FC = () => {
   });
   const contentCount = watch().content?.length | 0;
   const [createPostResult, createPost] = useMutation(CreatePostDocument);
-  const toast = useToast();
+  console.log(createPostResult);
+
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
 
   const onCreatePostModalClose = () => {
     setIsCreatePostModalOpen(false);
@@ -48,27 +52,13 @@ const CreatePostModal: FC = () => {
     const variables = { content: data.content };
     const result = await createPost(variables);
     if (result.error) {
-      toast({
-        title: 'Error',
-        description: '投稿の作成に失敗しました。',
-        status: 'error',
-        duration: 10000,
-        isClosable: true,
-        position: 'top',
-      });
+      errorToast('投稿の作成に失敗しました。');
       console.error(result.error.message);
       return;
     }
     setIsCreatePostModalOpen(false);
     reset();
-    toast({
-      title: 'Success',
-      description: '投稿の作成に成功しました。',
-      status: 'success',
-      duration: 10000,
-      isClosable: true,
-      position: 'top',
-    });
+    successToast('投稿の作成に成功しました。');
   };
 
   return (
