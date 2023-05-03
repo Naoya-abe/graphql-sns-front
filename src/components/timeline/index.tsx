@@ -1,13 +1,19 @@
 import { FC } from 'react';
 import { Box } from '@chakra-ui/react';
-import { useQuery } from 'urql';
+import { useQuery, useSubscription } from 'urql';
 import Post from '@/components/post';
-import { GetPostsDocument } from '@/graphql/generated/graphql';
+import {
+  GetPostsDocument,
+  PostAddedDocument,
+} from '@/graphql/generated/graphql';
 import { sortByCreatedAtDescending } from '@/utils/sortPosts';
 
 const Timeline: FC = () => {
   const [result] = useQuery({ query: GetPostsDocument });
   const sortedResult = sortByCreatedAtDescending(result.data?.posts);
+  const [subscriptionResult] = useSubscription({ query: PostAddedDocument });
+
+  console.log(subscriptionResult);
 
   return (
     <Box

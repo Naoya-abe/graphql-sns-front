@@ -1,0 +1,17 @@
+subscription PostAdded {
+  postAdded {
+    id
+    content
+    userId
+    user {
+      id
+      email
+      nickname
+      selfIntroduction
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
