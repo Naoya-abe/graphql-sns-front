@@ -48,7 +48,8 @@ const DeletePostModal: FC = () => {
     setDeletingPostId('');
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsSubmitting(true);
     const variables = { postId: deletingPostId };
     const result = await deletePost(variables);
@@ -74,7 +75,7 @@ const DeletePostModal: FC = () => {
         <ModalHeader>Delete</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={(event) => onSubmit(event)}>
             <FormControl mb={5}>
               <Textarea
                 isDisabled
