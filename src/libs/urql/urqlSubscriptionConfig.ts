@@ -3,8 +3,6 @@ import { Exchange, subscriptionExchange } from 'urql';
 
 const isSSR = typeof window === 'undefined';
 
-console.log({ isSSR });
-
 const transportWsClient = !isSSR
   ? new SubscriptionClient('ws://localhost:8080/graphql', { reconnect: true })
   : undefined;
